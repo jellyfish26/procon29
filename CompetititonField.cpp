@@ -7,6 +7,7 @@ using namespace std;
 class CompetitionField {
 private:
     int field[13][13];
+    // pair<int, int> is pair<x coordinate, y coordinate>
     pair<int, int> myselfAgent1, myselfAgent2;
     pair<int, int> enemyAgent1, enemyAgent2;
     /*
@@ -24,6 +25,14 @@ public:
             cout << "[filed] Could not set field size. Please type it again." << endl;
             return false;
         }
+    }
+
+    bool initizalizationAgentSetting() {
+        random_device randomDevice;
+        mt19937_64 randomValueGeneration(randomDevice());
+        long int randX = randomValueGeneration();
+        long int randY = randomValueGeneration();
+
     }
 
 
