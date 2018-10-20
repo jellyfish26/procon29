@@ -14,6 +14,11 @@ private:
      * When start this project. Initialization field size.
      */
     int filedSizeX, filedSizeY;
+
+    void initializationAgentCoordinateSettingsDescriptions(string agent) {
+        cout << "Please enter the location of " + agent + " . (x coordinate y coordinate)" << endl;
+    }
+
 public:
     bool initializationFieldSize(int x, int y) {
         if (x > 0 && x <= 12 && y > 0 && y <= 12) {
@@ -26,13 +31,19 @@ public:
             return false;
         }
     }
-
-    bool initizalizationAgentSetting() {
-        random_device randomDevice;
-        mt19937_64 randomValueGeneration(randomDevice());
-        long int randX = randomValueGeneration();
-        long int randY = randomValueGeneration();
-
+    /*
+     * Since the explanation of "line symmetry in the horizontal direction or line symmetry in the vertical direction" is ambiguous,
+     * ask the agent to input all the positions.
+     */
+    bool initializationAganetCoordinateSettings() {
+        initializationAgentCoordinateSettingsDescriptions("my first agent");
+        cin >> myselfAgent1.first >> myselfAgent1.second;
+        initializationAgentCoordinateSettingsDescriptions("my second agent");
+        cin >> myselfAgent2.first >> myselfAgent2.second;
+        initializationAgentCoordinateSettingsDescriptions("enemy first agent");
+        cin >> enemyAgent1.first >> enemyAgent1.second;
+        initializationAgentCoordinateSettingsDescriptions("enemy second agent");
+        cin >> enemyAgent2.first >> enemyAgent2.second;
     }
 
 
