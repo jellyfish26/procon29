@@ -7,8 +7,9 @@ using namespace std;
 class CompetitionField {
 private:
     int field[13][13];
-    bool myselfField[13][13] = {false};
-    bool enemyField[13][13] = {false};
+    bool myselfField[13][13] = {};
+    bool enemyField[13][13] = {};
+    bool fieldSurrounded[13][13] = {};
 
     // pair<int, int> is pair<x coordinate, y coordinate>
     pair<int, int> myselfAgent1, myselfAgent2;
@@ -20,6 +21,14 @@ private:
 
     void initializationAgentCoordinateSettingsDescriptions(const string &agent) {
         cout << "Please enter the location of " + agent + " . (x coordinate y coordinate)" << endl;
+    }
+
+    void fieldSurroundedInitialization() {
+        for (auto &i : fieldSurrounded) {
+            for (bool &j : i) {
+                j = false;
+            }
+        }
     }
 
 public:
@@ -59,6 +68,46 @@ public:
                 cin >> field[x][y];
             }
         }
+    }
+    /*
+     *  true = myself
+     *  false = enemy
+     */
+    bool myFieldNotSurroundedBFS(int x, int y) {
+        if (myselfField[x][y]) return false;
+        fieldSurrounded[x][y] = true;
+        if (x > 0) myFieldNotSurroundedBFS(x - 1, y);
+        if (y > 0) myFieldNotSurroundedBFS(x, y - 1);
+        if (x < fieldSizeX - 1) myFieldNotSurroundedBFS(x + 1, y);
+        if (y < fieldSizeY - 1) myFieldNotSurroundedBFS(x, y + 1);
+    }
+
+    int myScoreCalculation() {
+        fieldSurroundedInitialization();
+        int myScore = 0;
+        for (int i = 0; i < fieldSizeX; ++i) {
+            for (int j = 0; j < fieldSizeY; ++j) {
+                if (myselfField[i][j]) {
+                    if (field[i][j] > 0) myScore += field[i][j];
+                }
+            }
+        }
+
+        for (int i = 0; i < fieldSizeX; i += (fieldSizeX - 1)) {
+            for (int j = 0; j < fieldSizeY; j += (fieldSizeY - 1) {
+                myFieldNotSurroundedBFS(i, j);
+            }
+        }
+
+        for (int i = 0; i < fieldSizeX; ++i) {
+            for (int j = 0; j < fieldSizeY; ++j) {
+                if (!fieldSurrounded[i][j]) {
+                    myScore += abs(field[i][j]);
+                }
+            }
+        }
+
+        return myScore;
     }
 
 };
