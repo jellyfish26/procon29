@@ -74,6 +74,7 @@ public:
      *  false = enemy
      */
     bool myFieldNotSurroundedBFS(int x, int y) {
+        if (fieldSurrounded[x][y]) return false;
         if (myselfField[x][y]) return false;
         fieldSurrounded[x][y] = true;
         if (x > 0) myFieldNotSurroundedBFS(x - 1, y);
@@ -107,7 +108,51 @@ public:
             }
         }
 
+        // debug
+        cout << myScore << endl;
+
         return myScore;
+    }
+
+    bool enemyFieldNotSurroundedBFS(int x, int y) {
+        if (fieldSurrounded[x][y]) return false;
+        if (enemyField[x][y]) return false;
+        fieldSurrounded[x][y] = true;
+        if (x > 0) myFieldNotSurroundedBFS(x - 1, y);
+        if (y > 0) myFieldNotSurroundedBFS(x, y - 1);
+        if (x < fieldSizeX - 1) myFieldNotSurroundedBFS(x + 1, y);
+        if (y < fieldSizeY - 1) myFieldNotSurroundedBFS(x, y + 1);
+    }
+
+    int enemyScoreCalculation() {
+        fieldSurroundedInitialization();
+        int enemyScore = 0;
+        for (int i = 0; i < fieldSizeX; ++i) {
+            for (int j = 0; j < fieldSizeY; ++j) {
+                if (enemyField[i][j]) {
+                    if (field[i][j] > 0) enemyScore += field[i][j];
+                }
+            }
+        }
+
+        for (int i = 0; i < fieldSizeX; i += (fieldSizeX - 1)) {
+            for (int j = 0; j < fieldSizeY; j += (fieldSizeY - 1) {
+                enemyFieldNotSurroundedBFS(i, j);
+            }
+        }
+
+        for (int i = 0; i < fieldSizeX; ++i) {
+            for (int j = 0; j < fieldSizeY; ++j) {
+                if (!fieldSurrounded[i][j]) {
+                    enemyScore += abs(field[i][j]);
+                }
+            }
+        }
+
+        // debug
+        cout << enemyScore << endl;
+
+        return enemyScore;
     }
 
 };
