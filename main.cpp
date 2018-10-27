@@ -14,6 +14,8 @@ bool myAgentSurroundGet[13][13];
 bool enemyAgentGet[13][13];
 bool enemyAgentSurroundGet[13][13];
 
+int myScoreCalculation();
+int enemyScoreCalculation();
 
 int main() {
     // Get position information on panels and agents.
@@ -77,11 +79,30 @@ int main() {
         }
         cout << endl;
     }
+
+    cout << "myscore = " << myScoreCalculation() << endl;
+    cout << "enemyscore = " << enemyScoreCalculation() << endl;
 }
 
+void myAgentSurroundedInitalization() {
+    for (int i = 0; i < vertical; ++i) {
+        for (int j = 0; j < width; ++j) {
+            myAgentSurroundGet[i][j] = false;
+        }
+    }
+}
 
+void myAgentNotSurrounded(int x, int y) {
+    if (myAgentGet[x][y] || myAgentSurroundGet[x][y]) return;
+    myAgentSurroundGet[x][y] = true;
+    if (x > 0) myAgentNotSurrounded(x - 1, y);
+    if (y > 0) myAgentNotSurrounded(x, y - 1);
+    if (x < vertical - 1) myAgentNotSurrounded(x + 1, y);
+    if (y < width - 1) myAgentNotSurrounded(x, y + 1);
+}
 
-int myScoreCalclation() {
+int myScoreCalculation() {
+    myAgentSurroundedInitalization();
     int score = 0;
     for (int i = 0; i < vertical; ++i) {
         for (int j = 0; j < width; ++j) {
@@ -89,5 +110,69 @@ int myScoreCalclation() {
         }
     }
 
+    for (int i = 0; i < vertical; ++i) {
+        myAgentNotSurrounded(i, 0);
+        myAgentNotSurrounded(i, width - 1);
+    }
+
+    for (int i = 0; i < width; ++i) {
+        myAgentNotSurrounded(0, i);
+        myAgentNotSurrounded(vertical - 1, i);
+    }
+
+    for (int i = 0; i < vertical; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (!myAgentSurroundGet[i][j] && !myAgentGet[i][j]) score += abs(panel[i][j]);
+        }
+    }
+
+    return score;
+
+}
+
+
+void enemyAgentSurroundedInitalization() {
+    for (int i = 0; i < vertical; ++i) {
+        for (int j = 0; j < width; ++j) {
+            enemyAgentSurroundGet[i][j] = false;
+        }
+    }
+}
+
+void enemyAgentNotSurrounded(int x, int y) {
+    if (enemyAgentGet[x][y] || enemyAgentSurroundGet[x][y]) return;
+    enemyAgentSurroundGet[x][y] = true;
+    if (x > 0) enemyAgentNotSurrounded(x - 1, y);
+    if (y > 0) enemyAgentNotSurrounded(x, y - 1);
+    if (x < vertical - 1) enemyAgentNotSurrounded(x + 1, y);
+    if (y < width - 1) enemyAgentNotSurrounded(x, y + 1);
+}
+
+int enemyScoreCalculation() {
+    enemyAgentSurroundedInitalization();
+    int score = 0;
+    for (int i = 0; i < vertical; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (enemyAgentGet[i][j]) score += panel[i][j];
+        }
+    }
+
+    for (int i = 0; i < vertical; ++i) {
+        enemyAgentNotSurrounded(i, 0);
+        enemyAgentNotSurrounded(i, width - 1);
+    }
+
+    for (int i = 0; i < width; ++i) {
+        enemyAgentNotSurrounded(0, i);
+        enemyAgentNotSurrounded(vertical - 1, i);
+    }
+
+    for (int i = 0; i < vertical; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (!enemyAgentSurroundGet[i][j] && !enemyAgentGet[i][j]) score += abs(panel[i][j]);
+        }
+    }
+
+    return score;
 
 }
